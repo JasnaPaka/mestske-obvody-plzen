@@ -36,9 +36,32 @@ Reálně přejmenujeme sloupec pro název městského obvodu a přidáme sloupec
 wget http://epsg.io/5514.sql
 psql -U postgres -f 5514.sql plzen
 ```
+Bez uvedeného souřadnicového systému v databázi nic nenaleznete.
 
 ## Příklad použití
 
+Výstup získáte zavoláním skriptu `api.php`, který jako parametr bere `lat` a `long` odpovídající hodnotám ze souřadnicového systému WGS 84.
 
+`http://mujvlastniserver.cz/api.php?lat=49.738065&long=13.382195`
 
+Pokud je vše v pořádku, vrátí se vám XML soubor s HTTP stavovým kódem 200. Jeho podoba bude následující:
 
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<area>
+    <code>umo3</code>
+    <umo>Plzeň 3</umo>
+</area>
+```
+
+Výstup obsahuje kód městské části ve formátu `umoX`, kde `X` odpovídá číslu městské části Plzně. Následuje název městské části.
+
+Pokud nebyla na základě souřadnic nalezen žádný městský obvod či došlo při hledání k chybě, vrací se chybové XML. Stav, kdy nebylo nic nalezeno, je reprezentován HTTP stavovým kódem 404. Chybu pak značí stavový kód 500. V návratovém XML je pak kromě číselného kódu chyby i jeho popis. Jejich kompletní výčet lze nalézt v souboru `src/Error.php`.
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<error>
+    <code>4</code>
+    <msg>Nastala interní chyba služby. Databáze není dostupná.</msg>
+</error>
+```
