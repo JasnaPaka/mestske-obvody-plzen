@@ -72,6 +72,10 @@ class Controller
 
 		// Zpracování výsledku
 		$output = $this->db->findUmo($parameter["lat"], $parameter["long"]);
+		if ($output === false) {
+			$this->processError(Error::ERROR_CODE_4, Error::ERROR_CODE_4_MSG);
+			return;
+		}
 		if ($output == null) {
 			$this->processError(Error::ERROR_CODE_3, Error::ERROR_CODE_3_MSG, 404);
 			return;

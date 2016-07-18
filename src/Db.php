@@ -31,22 +31,19 @@ class Db
 		$db = null;
 		try {
 			$db = new PDO($connection_string);
+
+			$statement = $db->prepare("SELECT kod, nazev FROM umo WHERE st_contains(geom, ST_Transform(ST_SetSRID(ST_MakePoint(:lng, :lat), 4326), 5514)) = true LIMIT 1");
+			$statement->execute(array(':lat' => $lat, ':lng' => $long));
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			if (!$result) {
+				return null;
+			}
+
+			return $result;
 		} catch (PDOException $e) {
 			return false;
 		}
-
-		$statement = $db->prepare("SELECT kod, nazev FROM umo WHERE st_contains(geom, ST_Transform(ST_SetSRID(ST_MakePoint(:lng, :lat), 4326), 5514)) = true LIMIT 1");
-		$statement->execute(array(':lat' => $lat, ':lng' => $long));
-		$result = $statement->fetch(PDO::FETCH_ASSOC);
-		if (!$result) {
-			return false;
-		}
-
-		if (strlen($result["kod"]) == 0) {
-			return null;
-		}
-
-		return $result;
 	}
 }
 
