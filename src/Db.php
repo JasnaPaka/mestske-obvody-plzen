@@ -42,6 +42,9 @@ class Db
 
 			return $result;
 		} catch (PDOException $e) {
+			if ($this->settings["debug"]) {
+				print $e->getMessage();
+			}
 			return false;
 		}
 	}
