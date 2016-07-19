@@ -2,6 +2,7 @@
 
 include_once "Db.php";
 include_once "Error.php";
+include_once "Utils.php";
 
 
 /**
@@ -91,8 +92,8 @@ class Controller
 	private function processResult($parameters)
 	{
 		$content = file_get_contents("./template/result.xml");
-		$content = str_replace("%CODE%", $parameters["kod"], $content);
-		$content = str_replace("%NAME%", $parameters["nazev"], $content);
+		$content = str_replace("%CODE%", Utils::removeInvalidXMLChars($parameters["kod"]), $content);
+		$content = str_replace("%NAME%", Utils::removeInvalidXMLChars($parameters["nazev"]), $content);
 
 		$this->printOutput(200, $content);
 	}
@@ -107,8 +108,8 @@ class Controller
 	private function processError($code, $msg, $statusCode = 500)
 	{
 		$content = file_get_contents("./template/error.xml");
-		$content = str_replace("%CODE%", $code, $content);
-		$content = str_replace("%MSG%", $msg, $content);
+		$content = str_replace("%CODE%", Utils::removeInvalidXMLChars($code), $content);
+		$content = str_replace("%MSG%", Utils::removeInvalidXMLChars($msg), $content);
 
 		$this->printOutput($statusCode, $content);
 	}
