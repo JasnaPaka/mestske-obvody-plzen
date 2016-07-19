@@ -8,6 +8,7 @@ class UtilsTest extends PHPUnit_Framework_TestCase
 	public function testRemoveInvalidXMLChars()
 	{
 		$this->assertEquals("test123", Utils::removeInvalidXMLChars("test123"));
+		$this->assertEquals("test123", Utils::removeInvalidXMLChars("test><123"));
 	}
 
 }

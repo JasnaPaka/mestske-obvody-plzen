@@ -38,9 +38,13 @@ class Utils
 			}
 			else
 			{
-				$ret .= " ";
+				$ret .= "";
 			}
 		}
+
+		$ret = str_replace("<", "", $ret);
+		$ret = str_replace(">", "", $ret);
+
 		return $ret;
 	}
 }
