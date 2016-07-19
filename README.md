@@ -10,8 +10,8 @@ Je vyžadován webový server s podporou PHP, databáze PostgreSQL s nadstavbou 
 konfigurace, ale může být i jiná.
 
 * Apache 2.4
-* PHP 5.6
-* PostgreSQL 9.3 či 9.5
+* PHP 5.4 či vyšší
+* PostgreSQL 9.3 či vyšší
 * [PostGIS](http://postgis.net/) k odpovídající verzi PostgreSQL
 
 Tento projekt si stačí stáhnout, a následně přejmenovat soubor `config-default.php` v rootu projektu na `config.php`. V něm pak nastavit přístupové údaje k databázi s daty hranic městských obvodů.
