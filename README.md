@@ -2,6 +2,8 @@
 
 Webová služba, která na základě vstupních souřadnic ve formátu [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System) vrátí XML soubor s informací, v jakém městském obvodu Plzně se daný bod nachází.
 
+![Stav buidu](https://travis-ci.org/JasnaPaka/mestske-obvody-plzen.svg?branch=master)
+
 ## Instalace
 
 Je vyžadován webový server s podporou PHP, databáze PostgreSQL s nadstavbou PostGIS. Otestována byla následující
