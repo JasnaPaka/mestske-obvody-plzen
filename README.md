@@ -1,6 +1,6 @@
 # Detekce městského obvodu Plzně ze souřadnic
 
-Webová služba, která na základě vstupních souřadnic ve formátu [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System) vrátí XML soubor s informací, v jakém městském obvodu Plzně se daný bod nachází.
+Webová služba, která na základě vstupních souřadnic ve formátu [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System) vrátí XML soubor s informací, v jakém městském obvodu Plzně se daný bod nachází a v jaké jeho části.
 
 ![Stav buidu](https://travis-ci.org/JasnaPaka/mestske-obvody-plzen.svg?branch=master)
 
@@ -18,11 +18,14 @@ Tento projekt si stačí stáhnout, a následně přejmenovat soubor `config-def
 
 ### Příprava dat
 
-Hranice městských obvodů v Plzni lze volně získat v [Databázi otevřených dat města Plzně](https://opendata.plzen.eu/dataset/gis-uzemni-celky-plzen-mestske-casti) ve formátu [shp](https://en.wikipedia.org/wiki/Shapefile). Ten lze následně naimportovat do databáze pomocí příkazu `shp2pgsql`, který je součástí PostGisu.
+Hranice městských obvodů v Plzni lze volně získat v [Databázi otevřených dat města Plzně](https://opendata.plzen.eu/dataset/gis-uzemni-celky-plzen-mestske-casti) ve formátu [shp](https://en.wikipedia.org/wiki/Shapefile). Na [témže místě](https://opendata.plzen.eu/dataset/gis-uzemni-celky-plzen-casti-obce) lze získat i části obce. Obojí lze následně naimportovat do databáze pomocí příkazu `shp2pgsql`, který je součástí PostGisu.
 
-```shp2pgsql -s 5514 mestskecasti_SHP.shp public.umo | psql -h localhost -d plzen -U postgres```
+```
+shp2pgsql -s 5514 mestskecasti_SHP.shp public.umo | psql -h localhost -d plzen -U postgres
+shp2pgsql -s 5514 castiobce_SHP.shp public.castiobce | psql -h localhost -d plzen -U postgres
+```
 
-Výše uvedený příklad předpokládá, že výsledná databáze se bude jmenovat `plzen` a informace o městských obvodech se naimportuje do tabulky `umo`. Tu následně upravíme tak, aby jednotlivé sloupce byly pojmenovány následovně:
+Výše uvedený příklad předpokládá, že výsledná databáze se bude jmenovat `plzen`, informace o městských obvodech se naimportuje do tabulky `umo` a části obce budou v tabulce `castiobce`. Tu první následně upravíme tak, aby jednotlivé sloupce byly pojmenovány následovně:
 
 * gid
 * id
@@ -30,7 +33,7 @@ Výše uvedený příklad předpokládá, že výsledná databáze se bude jmeno
 * geom
 * kod 
 
-Reálně přejmenujeme sloupec pro název městského obvodu a přidáme sloupec `kod`. Protože se chybně naimportovala diakritika, bude potřeba ještě upravit názvy ve sloupci `nazev`. Do nově přidaného sloupce `kod` je potřeba přidat zkratky městských obvodů. Např. `umo3` pro Plzeň 3 a ekvivalentně pro další.
+Reálně přejmenujeme sloupec pro název městského obvodu a přidáme sloupec `kod`. Protože se chybně naimportovala diakritika, bude potřeba ještě upravit názvy ve sloupci `nazev`. Do nově přidaného sloupce `kod` je potřeba přidat zkratky městských obvodů. Např. `umo3` pro Plzeň 3 a ekvivalentně pro další. U druhé tabulky `castiobce` pouze upravíme diakritiku ve sloupci `nazev`.
 
 **Pozor!** Pokud budete vytvořenou databázi zálohovat a obnovovat jinde, ujistěte se, že v tabulce `spatial_ref_sys`, která je součástí databáze, bude po obnovení uveden souřadnicový systém S-JTSK [EPSG:5514](http://epsg.io/5514). Stačí si vyfiltrovat hodnotu `5514` ve sloupci `srid`. Pokud ji zde nenaleznete, stáhněte si následující skript a nad databází jej proveďte:
 
@@ -53,6 +56,7 @@ Pokud je vše v pořádku, vrátí se vám XML soubor s HTTP stavovým kódem 20
 <area>
     <code>umo3</code>
     <umo>Plzeň 3</umo>
+    <part>Jižní Předměstí</part>
 </area>
 ```
 
