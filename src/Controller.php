@@ -72,28 +72,36 @@ class Controller
 		}
 
 		// Zpracování výsledku
-		$output = $this->db->findUmo($parameter["lat"], $parameter["long"]);
-		if ($output === false) {
+		$umo = $this->db->findUmo($parameter["lat"], $parameter["long"]);
+		if ($umo === false) {
 			$this->processError(Error::ERROR_CODE_4, Error::ERROR_CODE_4_MSG);
 			return;
 		}
-		if ($output == null) {
+		if ($umo == null) {
 			$this->processError(Error::ERROR_CODE_3, Error::ERROR_CODE_3_MSG, 404);
 			return;
 		}
 
-		$this->processResult($output);
+		$part = $this->db->findCityPart($parameter["lat"], $parameter["long"]);
+		if ($part === false) {
+			$this->processError(Error::ERROR_CODE_4, Error::ERROR_CODE_4_MSG);
+			return;
+		}
+
+		$this->processResult($umo, $part);
 	}
 
 	/**
 	 * Provede zpracování pozitivní odpovědi (něco bylo na základě vstupu nalezeno). Výsledkem je XML.
-	 * @param $parameters array načtené hodnoty z databáze (ty, které jsou použity pro generování výstupu)
+	 * @param $umo array načtené hodnoty z databáze (ty, které jsou použity pro generování výstupu)
+	 * @param $part array název části obce
 	 */
-	private function processResult($parameters)
+	private function processResult($umo, $part)
 	{
 		$content = file_get_contents("./template/result.xml");
-		$content = str_replace("%CODE%", Utils::removeInvalidXMLChars($parameters["kod"]), $content);
-		$content = str_replace("%NAME%", Utils::removeInvalidXMLChars($parameters["nazev"]), $content);
+		$content = str_replace("%CODE%", Utils::removeInvalidXMLChars($umo["kod"]), $content);
+		$content = str_replace("%NAME%", Utils::removeInvalidXMLChars($umo["nazev"]), $content);
+		$content = str_replace("%PART%", Utils::removeInvalidXMLChars($part["nazev"]), $content);
 
 		$this->printOutput(200, $content);
 	}
