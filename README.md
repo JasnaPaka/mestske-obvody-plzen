@@ -45,9 +45,9 @@ Bez uvedeného souřadnicového systému v databázi nic nenaleznete.
 
 ## Příklad použití
 
-Výstup získáte zavoláním skriptu `api.php`, který jako parametr bere `lat` a `long` odpovídající hodnotám ze souřadnicového systému WGS 84.
+Výstup získáte zavoláním skriptu `service.php`, který jako parametr bere `lat` a `long` odpovídající hodnotám ze souřadnicového systému WGS 84.
 
-`http://mujvlastniserver.cz/api.php?lat=49.738065&long=13.382195`
+`http://mujvlastniserver.cz/service.php?lat=49.738065&long=13.382195`
 
 Pokud je vše v pořádku, vrátí se vám XML soubor s HTTP stavovým kódem 200. Jeho podoba bude následující:
 
