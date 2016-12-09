@@ -76,3 +76,22 @@ Výstup lze vrátit i ve formátu *json*. K tomu lze využít parametr URL *form
 ```
 {"code":"umo3","umo":"Plzeň 3","part":"Doudlevce"}
 ```
+Případně chybový výstup:
+```
+{"code":2,"msg":"Vstupní parametry 'lat' a 'long' musí být reálná čísla."}
+```
+
+## Hromadná žádost
+Pokud se potřebujete hromadně dotázat na více bodů, je to možné. Postačí zavolat samotný skript a do POST Payloadu uvést JSON s žádostí. Výstupem bude JSON s hromadnou odpovědí. Příklad žádosti:
+
+```
+[{"lat":49.725,"long":13.37661},{"lat":49.761248}]
+```
+
+Odpověď bude:
+
+```
+{"count" : 2, "items" : [{"status" : 200,"code" : "umo3", "umo" : "Plzeň 3", "part" : "Doudlevce"},{"status" : 500, "code" : 2, "msg" : "Vstupní parametry 'lat' a 'long' musí být reálná čísla."}]}
+```
+
+Navrácen je počet zpracovaných žádostí a v poli *items* pak jednotlivé odpovědi. Jejich struktura odpovídá formátu navracených XML při jednotlivých podáních. Navíc je zde atribut *status*, který značí, jak byl konkrétní požadavek ze seznamu vyřízen. Hodnota odpovídá HTTP statusu 200 (ok) či 500 (chyba).
