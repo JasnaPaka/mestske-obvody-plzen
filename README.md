@@ -1,6 +1,6 @@
 # Detekce městského obvodu Plzně ze souřadnic
 
-Webová služba, která na základě vstupních souřadnic ve formátu [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System) vrátí XML soubor s informací, v jakém městském obvodu Plzně se daný bod nachází a v jaké jeho části.
+Webová služba, která na základě vstupních souřadnic ve formátu [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System) vrátí výstup s informací ve formátu XML či JSON, v jakém městském obvodu Plzně se daný bod nachází a v jaké jeho části.
 
 ![Stav buidu](https://travis-ci.org/JasnaPaka/mestske-obvody-plzen.svg?branch=master)
 
@@ -70,4 +70,9 @@ Pokud nebyla na základě souřadnic nalezen žádný městský obvod či došlo
     <code>4</code>
     <msg>Nastala interní chyba služby. Databáze není dostupná.</msg>
 </error>
+```
+Výstup lze vrátit i ve formátu *json*. K tomu lze využít parametr URL *format*, který akceptuje hodnotu jak *xml* (není třeba uvádět), tak *json*. Příklad navráceného JSONu:
+
+```
+{"code":"umo3","umo":"Plzeň 3","part":"Doudlevce"}
 ```
