@@ -44,10 +44,31 @@ class Controller
 	 */
 	private function validate($values)
 	{
+		$urlParameters = true;
+
 		if ($values["lat"] == null || !is_float($values["lat"])) {
-			return false;
+			$urlParameters = false;
 		}
 		if ($values["long"] == null || !is_float($values["long"])) {
+			$urlParameters = false;
+		}
+
+		// Nejsou data v POST Payload?
+		if (!$urlParameters && !$this->getIsPOSTPayload()) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Test, zda se jedná o hromadné zpracování.
+	 *
+	 * @return bool Vrací true, pokud se jedná o hromadné zpracování, jinak false.
+	 */
+	private function getIsPOSTPayload() {
+		$requestBody = file_get_contents('php://input');
+		if (strlen($requestBody) == 0) {
 			return false;
 		}
 
@@ -76,26 +97,80 @@ class Controller
 		}
 
 		// Zpracování výsledku
-		$umo = $this->db->findUmo($parameters["lat"], $parameters["long"]);
-		if ($umo === false) {
-			$this->processError(Error::ERROR_CODE_4, Error::ERROR_CODE_4_MSG,
-				$this->getFormat($parameters));
-			return;
+		if (!$this->getIsPOSTPayload()) {
+			$umo = $this->db->findUmo($parameters["lat"], $parameters["long"]);
+			if ($umo === false) {
+				$this->processError(Error::ERROR_CODE_4, Error::ERROR_CODE_4_MSG,
+					$this->getFormat($parameters));
+				return;
+			}
+			if ($umo == null) {
+				$this->processError(Error::ERROR_CODE_3, Error::ERROR_CODE_3_MSG,
+					$this->getFormat($parameters), 404);
+				return;
+			}
+
+			$part = $this->db->findCityPart($parameters["lat"], $parameters["long"]);
+			if ($part === false) {
+				$this->processError(Error::ERROR_CODE_4, Error::ERROR_CODE_4_MSG,
+					$this->getFormat($parameters));
+				return;
+			}
+
+			$this->processResult($umo, $part, $this->getFormat($parameters));
+		} else {
+			// POST Payload zpracování
+			$this->processPOSTPayload();
 		}
-		if ($umo == null) {
-			$this->processError(Error::ERROR_CODE_3, Error::ERROR_CODE_3_MSG,
-				$this->getFormat($parameters), 404);
+
+
+	}
+
+	/**
+	 * Zpracuje hromadně zaslané souřadnice.
+	 */
+	private function processPOSTPayload()
+	{
+		$content = "";
+
+		$requestBody = file_get_contents('php://input');
+		$json = json_decode($requestBody);
+		if ($json === false) {
+			$this->processError(Error::ERROR_CODE_5, Error::ERROR_CODE_5_MSG,
+				"json");
 			return;
 		}
 
-		$part = $this->db->findCityPart($parameters["lat"], $parameters["long"]);
-		if ($part === false) {
-			$this->processError(Error::ERROR_CODE_4, Error::ERROR_CODE_4_MSG,
-				$this->getFormat($parameters));
-			return;
+		$i = 0;
+		foreach ($json as $item) {
+			$i++;
+
+			if (!isset($item->lat) || !isset($item->long)) {
+				$content = Utils::addJSONItem($content,
+					$this->getJSONError(Error::ERROR_CODE_2, Error::ERROR_CODE_2_MSG));
+				continue;
+			}
+
+			$umo = $this->db->findUmo($item->lat, $item->long);
+			$part = $this->db->findCityPart($item->lat, $item->long);
+
+			if ($umo == null) {
+				$content = Utils::addJSONItem($content,
+					$this->getJSONError(Error::ERROR_CODE_3, Error::ERROR_CODE_3_MSG));
+				continue;
+			}
+
+			$content = Utils::addJSONItem($content, sprintf(
+				"{\"status\" : 200,\"code\" : \"%s\", \"umo\" : \"%s\", \"part\" : \"%s\"}",
+				$umo["kod"], $umo["nazev"], $part["nazev"]));
 		}
 
-		$this->processResult($umo, $part, $this->getFormat($parameters));
+		$content = sprintf ("{\"count\" : %d, \"items\" : [%s]}", $i, $content);
+		$this->printOutput(200, $content, "json");
+	}
+
+	private function getJSONError($code, $msg) {
+		return sprintf("{\"status\" : 500, \"code\" : %d, \"msg\" : \"%s\"}", $code, $msg);
 	}
 
 	/**

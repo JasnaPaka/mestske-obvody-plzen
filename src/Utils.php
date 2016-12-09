@@ -47,4 +47,21 @@ class Utils
 
 		return $ret;
 	}
+
+	/**
+	 * Přidá k řetězci další řetězec JSON (do pole). Pokud se nejedná o první
+	 * prvek, přidá oddělovač.
+	 *
+	 * @param string $content text JSOn
+	 * @param string $add text JSON, co se má přidat
+ 	 * @return string vrátí JSON s nově přidaným řetězcem
+	 */
+	public static function addJSONItem($content, $add) {
+		if (strlen($content) > 0) {
+			$content .= ",";
+		}
+
+		$content .= $add;
+		return $content;
+	}
 }
