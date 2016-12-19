@@ -4,6 +4,9 @@ Webová služba, která na základě vstupních souřadnic ve formátu [WGS 84](
 
 ![Stav buidu](https://travis-ci.org/JasnaPaka/mestske-obvody-plzen.svg?branch=master)
 
+## Provoz
+Webová služba běží na adrese http://tools.jasnapaka.com/mestske-obvody-plzen/service.php.
+
 ## Instalace
 
 Je vyžadován webový server s podporou PHP, databáze PostgreSQL s nadstavbou PostGIS. Otestována byla následující
