@@ -3,7 +3,7 @@
 /**
  * Class Error obsahuje definici chybových stavů služby.
  */
-class Error
+class ErrorConstants
 {
 	const ERROR_CODE_1 = 1;
 	const ERROR_CODE_2 = 2;

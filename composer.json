@@ -10,6 +10,6 @@
     }
   ],
   "require": {
-    "phpunit/phpunit": "5.4.6"
+    "phpunit/phpunit": "^7"
   }
 }

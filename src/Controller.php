@@ -1,7 +1,7 @@
 <?php
 
 include_once "Db.php";
-include_once "Error.php";
+include_once "ErrorConstants.php";
 include_once "Utils.php";
 
 
@@ -84,14 +84,14 @@ class Controller
 
 		// Je služba povolena?
 		if (!$this->settings["enabled"]) {
-			$this->processError(Error::ERROR_CODE_1, Error::ERROR_CODE_1_MSG,
+			$this->processError(ErrorConstants::ERROR_CODE_1, ErrorConstants::ERROR_CODE_1_MSG,
 				$this->getFormat($parameters));
 			return;
 		}
 
 		// Jsou v pořádku vstupní parametry?
 		if (!$this->validate($parameters)) {
-			$this->processError(Error::ERROR_CODE_2, Error::ERROR_CODE_2_MSG,
+			$this->processError(ErrorConstants::ERROR_CODE_2, ErrorConstants::ERROR_CODE_2_MSG,
 				$this->getFormat($parameters));
 			return;
 		}
@@ -100,19 +100,19 @@ class Controller
 		if (!$this->getIsPOSTPayload()) {
 			$umo = $this->db->findUmo($parameters["lat"], $parameters["long"]);
 			if ($umo === false) {
-				$this->processError(Error::ERROR_CODE_4, Error::ERROR_CODE_4_MSG,
+				$this->processError(ErrorConstants::ERROR_CODE_4, ErrorConstants::ERROR_CODE_4_MSG,
 					$this->getFormat($parameters));
 				return;
 			}
 			if ($umo == null) {
-				$this->processError(Error::ERROR_CODE_3, Error::ERROR_CODE_3_MSG,
+				$this->processError(ErrorConstants::ERROR_CODE_3, ErrorConstants::ERROR_CODE_3_MSG,
 					$this->getFormat($parameters), 404);
 				return;
 			}
 
 			$part = $this->db->findCityPart($parameters["lat"], $parameters["long"]);
 			if ($part === false) {
-				$this->processError(Error::ERROR_CODE_4, Error::ERROR_CODE_4_MSG,
+				$this->processError(ErrorConstants::ERROR_CODE_4, ErrorConstants::ERROR_CODE_4_MSG,
 					$this->getFormat($parameters));
 				return;
 			}
@@ -136,7 +136,7 @@ class Controller
 		$requestBody = file_get_contents('php://input');
 		$json = json_decode($requestBody);
 		if ($json === false) {
-			$this->processError(Error::ERROR_CODE_5, Error::ERROR_CODE_5_MSG,
+			$this->processError(ErrorConstants::ERROR_CODE_5, ErrorConstants::ERROR_CODE_5_MSG,
 				"json");
 			return;
 		}
@@ -147,7 +147,7 @@ class Controller
 
 			if (!isset($item->lat) || !isset($item->long)) {
 				$content = Utils::addJSONItem($content,
-					$this->getJSONError(Error::ERROR_CODE_2, Error::ERROR_CODE_2_MSG));
+					$this->getJSONError(ErrorConstants::ERROR_CODE_2, ErrorConstants::ERROR_CODE_2_MSG));
 				continue;
 			}
 
@@ -156,7 +156,7 @@ class Controller
 
 			if ($umo == null) {
 				$content = Utils::addJSONItem($content,
-					$this->getJSONError(Error::ERROR_CODE_3, Error::ERROR_CODE_3_MSG));
+					$this->getJSONError(ErrorConstants::ERROR_CODE_3, ErrorConstants::ERROR_CODE_3_MSG));
 				continue;
 			}
 

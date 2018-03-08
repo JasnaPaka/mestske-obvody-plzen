@@ -1,8 +1,10 @@
 <?php
 
-include "src/Utils.php";
+include_once "src/Utils.php";
 
-class UtilsTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class UtilsTest extends TestCase
 {
 
 	public function testRemoveInvalidXMLChars()
