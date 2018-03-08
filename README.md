@@ -2,7 +2,7 @@
 
 Webová služba, která na základě vstupních souřadnic ve formátu [WGS 84](https://en.wikipedia.org/wiki/World_Geodetic_System) vrátí výstup s informací ve formátu XML či JSON, v jakém městském obvodu Plzně se daný bod nachází a v jaké jeho části.
 
-![Stav buidu](https://travis-ci.org/JasnaPaka/mestske-obvody-plzen.svg?branch=master)
+[![Stav buidu](https://travis-ci.org/JasnaPaka/mestske-obvody-plzen.svg?branch=master)](https://travis-ci.org/JasnaPaka/mestske-obvody-plzen)
 
 ## Provoz
 Webová služba běží na adrese http://tools.jasnapaka.com/mestske-obvody-plzen/service.php.
