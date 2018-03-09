@@ -13,7 +13,7 @@ Je vyžadován webový server s podporou PHP, databáze PostgreSQL s nadstavbou 
 konfigurace, ale může být i jiná.
 
 * Apache 2.4
-* PHP 7.0 či vyšší
+* PHP 7.0 či vyšší (vyžaduje modul "curl")
 * PostgreSQL 9.3 či vyšší
 * [PostGIS](http://postgis.net/) k odpovídající verzi PostgreSQL
 
