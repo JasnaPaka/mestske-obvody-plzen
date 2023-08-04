@@ -26,7 +26,7 @@ class Utils
 		$length = strlen($value);
 		for ($i=0; $i < $length; $i++)
 		{
-			$current = ord($value{$i});
+			$current = ord($value[$i]);
 			if (($current == 0x9) ||
 				($current == 0xA) ||
 				($current == 0xD) ||
